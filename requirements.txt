@@ -1,4 +1,6 @@
-python-3.11.9
+Flask>=3.0
+python-dateutil>=2.9
+waitress>=2.1
 
 
 
