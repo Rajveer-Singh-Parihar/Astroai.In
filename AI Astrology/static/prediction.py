@@ -56,9 +56,57 @@ def lucky_number(lp: int, dn: int, weekday: str) -> int:
     return reduce_to_digit(raw)
 
 def build_profile(name: str, dob_str: str) -> dict:
-    dt = datetime.strptime(dob_str, "%Y-%m-%d")
+    # Try multiple date formats
+    date_formats = [
+        "%Y-%m-%d",      # 1990-05-15
+        "%d-%m-%Y",      # 15-05-1990
+        "%d/%m/%Y",      # 15/05/1990
+        "%m/%d/%Y",      # 05/15/1990
+        "%d-%m-%y",      # 15-05-90
+        "%d/%m/%y",      # 15/05/90
+        "%Y/%m/%d",      # 1990/05/15
+    ]
+    
+    dt = None
+    for fmt in date_formats:
+        try:
+            dt = datetime.strptime(dob_str.strip(), fmt)
+            break
+        except ValueError:
+            continue
+    
+    if dt is None:
+        # If all formats fail, try to parse common patterns
+        try:
+            # Remove any extra spaces and common separators
+            clean_date = dob_str.strip().replace(' ', '').replace('.', '-').replace(',', '-')
+            # Try to extract day, month, year
+            parts = clean_date.replace('-', '/').split('/')
+            if len(parts) == 3:
+                day, month, year = parts
+                # Handle 2-digit years
+                if len(year) == 2:
+                    year = '20' + year if int(year) < 50 else '19' + year
+                dt = datetime(int(year), int(month), int(day))
+        except:
+            # Last resort: assume YYYY-MM-DD and try to fix common mistakes
+            try:
+                # If user entered DD-MM-YYYY, convert to YYYY-MM-DD
+                parts = dob_str.strip().split('-')
+                if len(parts) == 3 and len(parts[0]) == 2 and len(parts[2]) == 4:
+                    day, month, year = parts
+                    dt = datetime(int(year), int(month), int(day))
+            except:
+                raise ValueError(f"Could not parse date: {dob_str}. Please use format: DD-MM-YYYY or YYYY-MM-DD")
+    
+    # Check if date parsing was successful
+    if dt is None:
+        raise ValueError(f"Could not parse date: {dob_str}. Please use format: DD-MM-YYYY or YYYY-MM-DD")
+    
     z = zodiac_sign(dt.day, dt.month)
-    lp = life_path(dob_str)
+    # Use the parsed date for life path calculation
+    dob_for_life_path = dt.strftime("%Y-%m-%d")
+    lp = life_path(dob_for_life_path)
     dn = destiny_number(name)
     traits = ZODIAC_TRAITS.get(z,{})
     lpd = NUMEROLOGY.get(str(lp),"")

@@ -1,13 +1,39 @@
 {
     "Aries": {
-      "description": "Bold, energetic, and pioneering.",
-      "strengths": ["leadership","courage"],
-      "keywords": ["drive","pioneer"]
+      "description": "Bold, energetic, and pioneering. You are a natural leader with courage and determination."
     },
     "Taurus": {
-      "description": "Grounded, reliable, and persistent.",
-      "strengths": ["patience","loyalty"],
-      "keywords": ["stability","comfort"]
+      "description": "Grounded, reliable, and persistent. You value stability and comfort in all aspects of life."
+    },
+    "Gemini": {
+      "description": "Adaptable, curious, and expressive. You love communication and learning new things."
+    },
+    "Cancer": {
+      "description": "Nurturing, protective, and intuitive. You have strong emotional intelligence and care deeply for others."
+    },
+    "Leo": {
+      "description": "Confident, generous, and creative. You have natural leadership qualities and love to be in the spotlight."
+    },
+    "Virgo": {
+      "description": "Analytical, practical, and detail-oriented. You have a strong sense of duty and perfectionism."
+    },
+    "Libra": {
+      "description": "Diplomatic, fair, and social. You seek harmony and balance in all relationships."
+    },
+    "Scorpio": {
+      "description": "Passionate, determined, and mysterious. You have deep emotional intensity and strong intuition."
+    },
+    "Sagittarius": {
+      "description": "Optimistic, adventurous, and philosophical. You love freedom and exploring new horizons."
+    },
+    "Capricorn": {
+      "description": "Ambitious, disciplined, and responsible. You are goal-oriented and value tradition."
+    },
+    "Aquarius": {
+      "description": "Innovative, independent, and humanitarian. You think outside the box and care about society."
+    },
+    "Pisces": {
+      "description": "Compassionate, artistic, and spiritual. You have strong intuition and empathy for others."
     }
-  }
+}
   

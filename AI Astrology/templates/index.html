@@ -1,34 +1,381 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Astro Flask Chat</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AstroAI.in - Your Personal Astrology Guide</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <h1>🔮 Astrology Predictor</h1>
-  <form method="post">
-    <label>Name:</label>
-    <input type="text" name="name" required><br>
-    <label>Date of Birth:</label>
-    <input type="date" name="dob" required><br>
-    <button type="submit">Get Prediction</button>
-  </form>
+  <div class="stars"></div>
+  <div class="twinkling"></div>
+  <div class="particles"></div>
+  
+  <div class="container">
+    <!-- Welcome Section -->
+    <div class="welcome-section" id="welcomeSection">
+      <div class="logo">
+        <i class="fas fa-moon"></i>
+        <span>AstroAI.in</span>
+      </div>
+      <h1 class="main-title">
+        <span class="title-line">Hi, I am AstroAI.in</span>
+        <span class="title-line">Welcome to the Astrology App</span>
+      </h1>
+      <p class="subtitle">Discover your cosmic destiny through ancient wisdom and modern AI</p>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
 
-  {% if profile %}
-  <div class="card">
-    <h2>Hello, {{ profile.name }}!</h2>
-    <p>DOB: {{ profile.dob }} ({{ profile.weekday }}) • Age {{ profile.age }}</p>
-    <p><b>Zodiac:</b> {{ profile.zodiac }}</p>
-    <p><b>Life Path:</b> {{ profile.life_path }} → {{ profile.life_path_desc }}</p>
-    <p><b>Destiny Number:</b> {{ profile.destiny }} → {{ profile.destiny_desc }}</p>
-    <p><b>Lucky Number:</b> {{ profile.lucky_number }}</p>
-    <p><b>Traits:</b> {{ profile.traits.description }}</p>
-    <hr/>
-    <p><b>Personal Year:</b> {{ profile.personal_year }}</p>
-    <p><b>Future Prediction:</b> {{ profile.future_prediction }}</p>
-    <p><b>Remedies:</b> {{ profile.remedies }}</p>
-    <p><b>Marriage Life:</b> {{ profile.marriage_life }}</p>
+    <!-- Form Section -->
+    <div class="form-section" id="formSection">
+      <div class="form-container">
+        <h2><i class="fas fa-crystal-ball"></i> Get Your Prediction</h2>
+        
+        {% if error %}
+        <div style="background: rgba(255, 0, 0, 0.2); border: 1px solid #ff0000; border-radius: 10px; padding: 15px; margin-bottom: 20px; color: #ffcccc;">
+          <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="post" id="predictionForm">
+          <div class="input-group">
+            <label for="name">
+              <i class="fas fa-user"></i>
+              Your Name
+            </label>
+            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+          </div>
+          
+          <div class="input-group">
+            <label for="dob">
+              <i class="fas fa-calendar"></i>
+              Date of Birth
+            </label>
+            <input type="text" id="dob" name="dob" required placeholder="Enter your birth date (e.g., 15-05-1990 or 1990-05-15)">
+            <small style="color: rgba(255,255,255,0.7); font-size: 0.8rem; margin-top: 5px; display: block;">
+              You can type any format: 15-05-1990, 1990-05-15, 15/05/1990, etc.
+            </small>
+          </div>
+          
+          <button type="submit" class="submit-btn">
+            <span class="btn-text">Reveal My Destiny</span>
+            <i class="fas fa-magic"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="loading-section" id="loadingSection" style="display: none;">
+      <div class="loading-container">
+        <div class="crystal-ball">
+          <div class="inner-glow"></div>
+        </div>
+        <h3>Reading the Stars...</h3>
+        <div class="loading-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="loading-progress">
+          <div class="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    {% if profile %}
+    <div class="results-section" id="resultsSection" data-has-profile="true">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="profile-info">
+            <h2 class="greeting">Hello, {{ profile.name }}! ✨</h2>
+            <p class="basic-info">
+              <i class="fas fa-birthday-cake"></i>
+              {{ profile.dob }} ({{ profile.weekday }}) • Age {{ profile.age }}
+            </p>
+          </div>
+        </div>
+
+        <div class="prediction-grid">
+          <!-- Zodiac Card -->
+          <div class="prediction-card zodiac-card" data-card="zodiac">
+            <div class="card-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <h3>Zodiac Sign</h3>
+            <div class="highlight-value">{{ profile.zodiac }}</div>
+            <p>{{ profile.traits.description }}</p>
+          </div>
+
+          <!-- Life Path Card -->
+          <div class="prediction-card life-path-card" data-card="life-path">
+            <div class="card-icon">
+              <i class="fas fa-road"></i>
+            </div>
+            <h3>Life Path Number</h3>
+            <div class="highlight-value">{{ profile.life_path }}</div>
+            <p>{{ profile.life_path_desc }}</p>
+          </div>
+
+          <!-- Destiny Card -->
+          <div class="prediction-card destiny-card" data-card="destiny">
+            <div class="card-icon">
+              <i class="fas fa-compass"></i>
+            </div>
+            <h3>Destiny Number</h3>
+            <div class="highlight-value">{{ profile.destiny }}</div>
+            <p>{{ profile.destiny_desc }}</p>
+          </div>
+
+          <!-- Lucky Number Card -->
+          <div class="prediction-card lucky-card" data-card="lucky">
+            <div class="card-icon">
+              <i class="fas fa-clover"></i>
+            </div>
+            <h3>Lucky Number</h3>
+            <div class="highlight-value">{{ profile.lucky_number }}</div>
+            <p>Your cosmic lucky charm</p>
+          </div>
+
+          <!-- Personal Year Card -->
+          <div class="prediction-card year-card" data-card="year">
+            <div class="card-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>Personal Year</h3>
+            <div class="highlight-value">{{ profile.personal_year }}</div>
+            <p>Your current life cycle</p>
+          </div>
+        </div>
+
+        <!-- Detailed Predictions with Staggered Animation -->
+        <div class="detailed-predictions">
+          <div class="prediction-section future-section" data-section="future">
+            <div class="section-header">
+              <h3><i class="fas fa-crystal-ball"></i> Future Prediction</h3>
+              <div class="section-indicator"></div>
+            </div>
+            <div class="prediction-content">
+              {{ profile.future_prediction }}
+            </div>
+          </div>
+
+          <div class="prediction-section remedies-section" data-section="remedies">
+            <div class="section-header">
+              <h3><i class="fas fa-heart"></i> Remedies & Guidance</h3>
+              <div class="section-indicator"></div>
+            </div>
+            <div class="prediction-content">
+              {{ profile.remedies }}
+            </div>
+          </div>
+
+          <div class="prediction-section marriage-section" data-section="marriage">
+            <div class="section-header">
+              <h3><i class="fas fa-rings-wedding"></i> Marriage Life Outlook</h3>
+              <div class="section-indicator"></div>
+            </div>
+            <div class="prediction-content">
+              {{ profile.marriage_life }}
+            </div>
+          </div>
+        </div>
+
+        <button class="new-prediction-btn" onclick="location.reload()">
+          <i class="fas fa-redo"></i>
+          Get Another Reading
+        </button>
+      </div>
+    </div>
+    {% endif %}
   </div>
-  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+  <script>
+    // Check if we have profile data (results page)
+    const resultsSection = document.getElementById('resultsSection');
+    const hasProfile = resultsSection && resultsSection.getAttribute('data-has-profile') === 'true';
+    
+    // Form submission animation
+    document.getElementById('predictionForm').addEventListener('submit', function(e) {
+      // Show loading animation
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('loadingSection').style.display = 'block';
+      
+      // Animate progress bar
+      const progressBar = document.querySelector('.progress-bar');
+      progressBar.style.width = '0%';
+      
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        progressBar.style.width = progress + '%';
+        
+        if (progress >= 100) {
+          clearInterval(progressInterval);
+          // Let the form submit naturally after loading animation
+          setTimeout(() => {
+            // The form will submit to server and reload page with results
+          }, 1000);
+        }
+      }, 200);
+    });
+
+    // Scroll to form on welcome section click
+    document.querySelector('.scroll-indicator').addEventListener('click', function() {
+      document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // If we have profile data, start animations
+    if (hasProfile) {
+      // Hide results initially
+      if (resultsSection) {
+        resultsSection.style.display = 'none';
+        
+        // Fallback: Show results after 3 seconds if animations don't work
+        setTimeout(() => {
+          if (resultsSection.style.display === 'none') {
+            resultsSection.style.display = 'block';
+            // Ensure all content is visible
+            document.querySelectorAll('.prediction-section').forEach(section => {
+              section.style.opacity = '1';
+              section.style.transform = 'translateX(0)';
+            });
+            document.querySelectorAll('.prediction-content').forEach(content => {
+              content.style.opacity = '1';
+              content.style.transform = 'translateY(0)';
+            });
+          }
+        }, 3000);
+        
+        // Show loading first, then results
+        setTimeout(() => {
+          document.getElementById('loadingSection').style.display = 'block';
+          
+          // Animate progress bar
+          const progressBar = document.querySelector('.progress-bar');
+          progressBar.style.width = '0%';
+          
+          let progress = 0;
+          const progressInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 100) progress = 100;
+            progressBar.style.width = progress + '%';
+            
+            if (progress >= 100) {
+              clearInterval(progressInterval);
+              setTimeout(() => {
+                // Hide loading and show results
+                document.getElementById('loadingSection').style.display = 'none';
+                resultsSection.style.display = 'block';
+                startCardAnimations();
+              }, 500);
+            }
+          }, 200);
+        }, 500);
+      }
+    }
+
+    // Start card animations one by one
+    function startCardAnimations() {
+      const cards = document.querySelectorAll('.prediction-card');
+      const sections = document.querySelectorAll('.prediction-section');
+      
+      // Reset all cards to hidden state
+      cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(50px) scale(0.8)';
+        card.style.visibility = 'visible';
+      });
+      
+      // Reset all sections to hidden state
+      sections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateX(-50px)';
+        section.style.visibility = 'visible';
+      });
+      
+      // Animate cards one by one
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0) scale(1)';
+          
+          // Add bounce effect
+          setTimeout(() => {
+            card.style.transform = 'translateY(-10px) scale(1.05)';
+            setTimeout(() => {
+              card.style.transform = 'translateY(0) scale(1)';
+            }, 200);
+          }, 400);
+        }, index * 400); // Reduced delay for faster animation
+      });
+      
+      // Start detailed sections after all cards are shown
+      const totalCardTime = cards.length * 400;
+      sections.forEach((section, index) => {
+        setTimeout(() => {
+          section.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          section.style.opacity = '1';
+          section.style.transform = 'translateX(0)';
+          
+          // Ensure prediction content is visible
+          const content = section.querySelector('.prediction-content');
+          if (content) {
+            content.style.opacity = '1';
+            content.style.transform = 'translateY(0)';
+          }
+          
+          // Animate section indicator
+          const indicator = section.querySelector('.section-indicator');
+          if (indicator) {
+            setTimeout(() => {
+              indicator.style.width = '100%';
+            }, 300);
+          }
+        }, totalCardTime + (index * 600)); // Reduced delay for faster animation
+      });
+    }
+
+    // Particle effect
+    function createParticles() {
+      const particlesContainer = document.querySelector('.particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      createParticles();
+    });
+
+    // Enhanced loading animation
+    window.addEventListener('load', function() {
+      // Preload animations
+      const elements = document.querySelectorAll('.title-line, .subtitle, .form-container');
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 200);
+      });
+    });
+  </script>
 </body>
 </html>
