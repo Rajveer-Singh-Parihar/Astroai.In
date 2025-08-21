@@ -1,0 +1,4 @@
+body { font-family: Arial, sans-serif; background:#f5f5f5; text-align:center; padding:30px; }
+form { margin:20px auto; padding:20px; background:#fff; width:300px; border-radius:10px; box-shadow:0 0 10px #aaa; }
+input, button { margin:10px 0; padding:8px; width:90%; }
+.card { margin:20px auto; padding:20px; background:#fff; width:400px; border-radius:10px; box-shadow:0 0 10px #aaa; text-align:left; }
